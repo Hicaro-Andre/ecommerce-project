@@ -12,8 +12,6 @@ const CategorySchema = new Schema({
    categoryName: String,
    description: String,
    isActive: Boolean,
-   timesstamps: true,
-
 })
 
 const CategoryModel = mongoose.model("category" , CategorySchema);

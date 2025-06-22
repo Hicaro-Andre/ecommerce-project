@@ -1,17 +1,18 @@
 const UserModel = require("../Models/UserModel");
 
 class UserController {
-  //todo: function of create the users
+  
+  // 👉 Criar usuário
   async userCreate(req, res) {
     try {
       const createUser = await UserModel.create(req.body);
-      return res.status(200).json(createUser);
+      return res.status(201).json(createUser);
     } catch (error) {
       res.status(404).json({ message: "Failed create user" });
     }
   }
 
-  //todo: function for list users
+  // 👉 Listar todos os usuários
   async userList(req, res) {
     try {
       const listuser = await UserModel.find();
@@ -21,7 +22,7 @@ class UserController {
     }
   }
 
-  //todo: function for list user with ID
+  // 👉 Listar usuário por ID
   async userListId(req, res) {
     try {
       const { id } = req.params;
@@ -37,7 +38,7 @@ class UserController {
     }
   }
 
-  //todo: function for update users
+  // 👉 Atualizar usuário por ID
   async userUpdate(req, res) {
     try {
       const { id } = req.params;
@@ -49,7 +50,7 @@ class UserController {
     }
   }
 
-  //todo: function for delete users
+  // 👉 Deletar usuário por ID
   async userDelete(req, res) {
     try {
       const { id } = req.params;

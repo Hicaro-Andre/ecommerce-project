@@ -1,6 +1,10 @@
 const { Router } = require ("express")
-const ProductController = require("../Controllers/ProductController")
+
 const UserController = require ("../Controllers/UserController");
+const validateUserData = require('../Middlewares/validateUserData');
+
+
+const ProductController = require("../Controllers/ProductController")
 const CategoryController = require("../Controllers/CategoryController");
 
 const routes = Router();
@@ -10,8 +14,8 @@ routes.get("/index" , (req , res) => {
 });
 
 
-
-routes.post("/users" , UserController.userCreate );
+// 🔥 User Routes
+routes.post("/users" ,validateUserData, UserController.userCreate );
 routes.get("/users" , UserController.userList);
 routes.get("/users/:id" , UserController.userListId);
 routes.put("/users/:id" , UserController.userUpdate);

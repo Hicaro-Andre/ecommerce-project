@@ -14,7 +14,6 @@ const ProductSchema = new Schema({
   price: Number,
   stock: Number,
   isActive: Boolean,
-  timesstamps: true,
 });
 
 const ProductModel = mongoose.model("products" , ProductSchema);
