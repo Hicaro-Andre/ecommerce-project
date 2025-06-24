@@ -25,5 +25,5 @@ const UserSchema = new Schema({
   }
 }, {timestamps: true});
 
-const UserModel = mongoose.model("users" , UserSchema);
-module.exports = UserModel;
+const CadUsersModel = mongoose.model("CadUsers" , UserSchema);
+module.exports = CadUsersModel;

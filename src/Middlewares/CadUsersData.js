@@ -1,4 +1,6 @@
-function validateUserData(req, res, next) {
+
+
+function CadUsersData(req, res, next) {
   const { name, email, password, cpf } = req.body;
 
   // Validação do Nome
@@ -27,4 +29,4 @@ function validateUserData(req, res, next) {
   next(); // Se passou em todas as validações, continua para o Controller
 }
 
-module.exports = validateUserData;
+module.exports = CadUsersData;
