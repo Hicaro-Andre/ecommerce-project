@@ -1,9 +1,11 @@
 require ( 'dotenv' ) . config ( )
-console.log ( process.env ) 
 const express = require ("express")
+const connectDB = require("./config/db")
 const routes = require ("./routes/routes.js")
 
 const app = express();
+
+connectDB();
 
 app.use(express.json());
 app.use(routes);

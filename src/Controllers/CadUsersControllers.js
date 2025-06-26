@@ -2,7 +2,7 @@ const UserModel = require("../Models/CadUsersModel");
 
 class CadUserControllers {
   
-  // 👉 Criar usuário
+  // Criar usuário
   async CadUserCreate(req, res) {
     try {
       const createUser = await UserModel.create(req.body);
@@ -12,7 +12,7 @@ class CadUserControllers {
     }
   }
 
-  // 👉 Listar todos os usuários
+  // Listar todos os usuários
   async CadUserList(req, res) {
     try {
       const listuser = await UserModel.find();
@@ -22,7 +22,7 @@ class CadUserControllers {
     }
   }
 
-  // 👉 Listar usuário por ID
+  // Listar usuário por ID
   async CadUserListId(req, res) {
     try {
       const { id } = req.params;
@@ -38,7 +38,7 @@ class CadUserControllers {
     }
   }
 
-  // 👉 Atualizar usuário por ID
+  // Atualizar usuário por ID
   async CadUserUpdate(req, res) {
     try {
       const { id } = req.params;
@@ -50,7 +50,7 @@ class CadUserControllers {
     }
   }
 
-  // 👉 Deletar usuário por ID
+  // Deletar usuário por ID
   async CadUserDelete(req, res) {
     try {
       const { id } = req.params;

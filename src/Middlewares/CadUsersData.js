@@ -1,5 +1,4 @@
 
-
 function CadUsersData(req, res, next) {
   const { name, email, password, cpf } = req.body;
 
