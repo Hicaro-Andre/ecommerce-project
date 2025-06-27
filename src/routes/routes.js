@@ -18,7 +18,11 @@ routes.put("/users/:id" , CadUserControllers.CadUserUpdate);
 routes.delete("/users/:id" , CadUserControllers.CadUserDelete);
 
 // Rotas de Cadastros de Produtos
-routes.post("/products" , ProductControllers.ProductCreate)
+routes.post("/products" , ProductControllers.ProductCreate);
+routes.get("/products" , ProductControllers.ProductList);
+routes.get("/products/:id" , ProductControllers.ProductListId);
+routes.put("/products/:id" , ProductControllers.ProductUpdate);
+routes.delete("/products/:id" , ProductControllers.ProductDelete );
 
 
 

@@ -44,7 +44,7 @@ class CadUserControllers {
       const { id } = req.params;
 
       await UserModel.findByIdAndUpdate(id, req.body);
-      return res.status(200).json({ message: "User update sucess" });
+      return res.status(200).json({ message: "User update success" });
     } catch (error) {
       return res.status(404).json({ message: "Failed user update" });
     }
@@ -60,7 +60,7 @@ class CadUserControllers {
       if (!userDelete) {
         return res.status(404).json({ message: "User does not exists" });
       }
-      return res.status(200).json({ message: "User delete sucess" });
+      return res.status(200).json({ message: "User delete success" });
     } catch (error) {
       return res.status(404).json({ message: "Failed to delete" });
     }
