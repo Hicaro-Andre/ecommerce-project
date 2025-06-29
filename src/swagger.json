@@ -172,7 +172,7 @@
         "tags": ["Produtos"],
         "responses": {
           "200": {
-            "description": "List de produtos",
+            "description": "Lista de produtos",
             "content": {
               "application/json": {
                 "schema": {
