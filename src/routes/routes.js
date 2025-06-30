@@ -7,7 +7,7 @@ const CadUserControllers = require ("../Controllers/CadUsersControllers");
 const UserData = require ("../Middlewares/UserData.js")
 //
 const ProductControllers = require("../Controllers/ProductControllers");
-
+const ProductData = require ("../Middlewares/ProductsData.js")
 
 
 
@@ -19,7 +19,7 @@ routes.put("/users/:id" , UserData, CadUserControllers.CadUserUpdate);
 routes.delete("/users/:id" , CadUserControllers.CadUserDelete);
 
 // Rotas de Cadastros de Produtos
-routes.post("/products" , ProductControllers.ProductCreate);
+routes.post("/products" ,ProductData , ProductControllers.ProductCreate);
 routes.get("/products" , ProductControllers.ProductList);
 routes.get("/products/:id" , ProductControllers.ProductListId);
 routes.put("/products/:id" , ProductControllers.ProductUpdate);
