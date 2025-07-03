@@ -1,22 +1,21 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
+  const [mensagem, setMensagem] = useState('');
+
+  useEffect(() => {
+    fetch('http://localhost:3333/ping')
+      .then((res) => res.json())
+      .then((data) => setMensagem(data.message))
+      .catch((err) => console.error('Erro ao conectar com a API:', err));
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>React conectado com API</h1>
+        <p>Resposta da API: {mensagem}</p>
       </header>
     </div>
   );
