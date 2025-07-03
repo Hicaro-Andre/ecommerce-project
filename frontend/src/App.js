@@ -5,7 +5,7 @@ function App() {
   const [mensagem, setMensagem] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:3333/ping')
+    fetch('http://localhost:3333/')
       .then((res) => res.json())
       .then((data) => setMensagem(data.message))
       .catch((err) => console.error('Erro ao conectar com a API:', err));
