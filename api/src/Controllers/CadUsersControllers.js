@@ -2,6 +2,7 @@ const UserModel = require("../Models/CadUsersModel");
 const bcrypt = require("bcrypt");
 
 class CadUserControllers {
+  
   // Criar usuário
   async CadUserCreate(req, res) {
     try {
