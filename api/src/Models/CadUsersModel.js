@@ -1,29 +1,40 @@
-const mongoose = require ("mongoose")
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const Schema = mongoose.Schema;
 
-
 const UserSchema = new Schema({
-
-  cpf:{
+  cpf: {
     type: String,
     required: true,
-    unique: true //CPF deve ser único
+    unique: true
   },
-  name:{
+  name: {
     type: String,
     required: true
   },
-  email:{
+  email: {
     type: String,
     required: true,
-    unique: true //Email também deve ser único
+    unique: true
   },
-  password:{
+  password: {
     type: String,
     required: true
   }
-}, {timestamps: true});
+}, { timestamps: true });
 
-const CadUsersModel = mongoose.model("CadUsers" , UserSchema);
+// Middleware que roda antes de salvar
+UserSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next(); // só aplica hash se a senha mudou
+  try {
+    const salt = await bcrypt.genSalt(10); // mais seguro com salt
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+const CadUsersModel = mongoose.model("CadUsers", UserSchema);
 module.exports = CadUsersModel;

@@ -61,6 +61,52 @@
         }
       }
     },
+    "/users/login": {
+      "post": {
+        "summary": "Autentica um usuário",
+        "tags": ["Usuários"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": { "type": "string" },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "_id": { "type": "string" },
+                        "name": { "type": "string" },
+                        "email": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Credenciais inválidas" },
+          "400": { "description": "Erro de validação" }
+        }
+      }
+    },
     "/users/{id}": {
       "get": {
         "summary": "Busca um usuário por ID",

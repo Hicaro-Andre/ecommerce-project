@@ -14,6 +14,7 @@ const ProductData = require ("../Middlewares/ProductsData.js")
 // Rotas de Cadastros de Usuários
 routes.post("/users" , UserData , CadUserControllers.CadUserCreate);
 routes.get("/users" , CadUserControllers.CadUserList);
+routes.post("/users/login" , CadUserControllers.CadUserLogin);
 routes.get("/users/:id" , CadUserControllers.CadUserListId);
 routes.put("/users/:id" , UserData, CadUserControllers.CadUserUpdate);
 routes.delete("/users/:id" , CadUserControllers.CadUserDelete);
