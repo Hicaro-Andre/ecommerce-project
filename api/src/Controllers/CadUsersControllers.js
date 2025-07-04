@@ -1,5 +1,4 @@
 const UserModel = require("../Models/CadUsersModel");
-const bcrypt = require("bcrypt");
 
 class CadUserControllers {
   
@@ -11,44 +10,6 @@ class CadUserControllers {
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
       return res.status(500).json({ message: "Erro ao criar usuário" });
-    }
-  }
-
-  // Login do usuário
-  async CadUserLogin(req, res) {
-    try {
-      const { email, password } = req.body;
-
-      if (!email || !password) {
-        return res
-          .status(400)
-          .json({ message: "E-mail e senha são obrigatórios." });
-      }
-
-      const user = await UserModel.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "Usuário não encontrado." });
-      }
-
-      // Debug temporário
-      console.log("Senha enviada:", password);
-      console.log("Hash no banco:", user.password);
-
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return res.status(401).json({ message: "Senha incorreta." });
-      }
-
-      // Remover a senha do retorno
-      const { password: _, ...userData } = user.toObject();
-
-      return res.status(200).json({
-        message: "Login realizado com sucesso.",
-        user: userData,
-      });
-    } catch (error) {
-      console.error("Erro no login:", error);
-      return res.status(500).json({ message: "Erro ao fazer login." });
     }
   }
 

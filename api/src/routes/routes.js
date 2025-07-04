@@ -7,19 +7,23 @@ const CadUserControllers = require ("../Controllers/CadUsersControllers");
 const UserData = require ("../Middlewares/UserData.js")
 //
 const ProductControllers = require("../Controllers/ProductControllers");
-const ProductData = require ("../Middlewares/ProductsData.js")
+const ProductData = require ("../Middlewares/ProductsData.js");
+//
+const AuthController = require("../Controllers/AuthController.js");
 
 
 
-// Rotas de Cadastros de Usuários
+//Rotas de Cadastros de Usuários
 routes.post("/users" , UserData , CadUserControllers.CadUserCreate);
 routes.get("/users" , CadUserControllers.CadUserList);
-routes.post("/users/login" , CadUserControllers.CadUserLogin);
 routes.get("/users/:id" , CadUserControllers.CadUserListId);
 routes.put("/users/:id" , UserData, CadUserControllers.CadUserUpdate);
 routes.delete("/users/:id" , CadUserControllers.CadUserDelete);
 
-// Rotas de Cadastros de Produtos
+//Rotas de Login
+routes.post("/users/login" , AuthController.login);
+
+//Rotas de Cadastros de Produtos
 routes.post("/products" ,ProductData , ProductControllers.ProductCreate);
 routes.get("/products" , ProductControllers.ProductList);
 routes.get("/products/:id" , ProductControllers.ProductListId);

@@ -24,11 +24,12 @@ const UserSchema = new Schema({
   }
 }, { timestamps: true });
 
-// Middleware que roda antes de salvar
+
+// Middleware que roda antes de salvar , aqui se aplica o hash
 UserSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next(); // só aplica hash se a senha mudou
+  if (!this.isModified('password')) return next(); 
   try {
-    const salt = await bcrypt.genSalt(10); // mais seguro com salt
+    const salt = await bcrypt.genSalt(10); 
     this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (err) {
