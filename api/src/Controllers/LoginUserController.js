@@ -1,7 +1,7 @@
 const UserModel = require("../Models/CadUsersModel");
 const bcrypt = require("bcrypt");
 
-class AuthController {
+class LoginUserController {
   
   
   async login(req, res) {
@@ -33,4 +33,4 @@ class AuthController {
   }
 }
 
-module.exports = new AuthController();
+module.exports = new LoginUserController();

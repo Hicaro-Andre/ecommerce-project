@@ -25,7 +25,7 @@ const UserSchema = new Schema({
 }, { timestamps: true });
 
 
-// Middleware que roda antes de salvar , aqui se aplica o hash
+// Criptografa a senha antes de salvar
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next(); 
   try {
