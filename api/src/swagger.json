@@ -318,6 +318,96 @@
           "404": { "description": "Produto não encontrado" }
         }
       }
+    },
+    "/cart": {
+      "post": {
+        "summary": "Adiciona um item ao carrinho do usuário",
+        "tags": ["Carrinho"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["userId", "productId", "quantity"],
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "example": "64f09a40123abc789def4567"
+                  },
+                  "productId": {
+                    "type": "string",
+                    "example": "64f09a40ab12cd34ef567890"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "example": 2
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Carrinho atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cart"
+                }
+              }
+            }
+          },
+          "400": { "description": "Dados inválidos" },
+          "404": { "description": "Produto não encontrado" },
+          "500": { "description": "Erro interno do servidor" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CartItem": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "example": "64f09a40ab12cd34ef567890"
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 2
+          },
+          "priceAtPurchase": {
+            "type": "number",
+            "example": 59.90
+          }
+        }
+      },
+      "Cart": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "64f09a40123abc789def4567"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CartItem"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
     }
   },
   "security": [

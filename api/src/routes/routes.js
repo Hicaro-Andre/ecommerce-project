@@ -9,8 +9,8 @@ const ProductControllers = require("../Controllers/ProductControllers");
 const ProductData = require ("../Middlewares/ProductsData.js");
 //
 const LoginUserController = require ("../Controllers/LoginUserController.js");
-
 const AuthLoginData = require('../Middlewares/AuthLoginData.js');
+const CartController = require("../Controllers/CartController.js");
 
 
 
@@ -30,6 +30,15 @@ routes.get("/products" , ProductControllers.ProductList);
 routes.get("/products/:id" , ProductControllers.ProductListId);
 routes.put("/products/:id" , ProductControllers.ProductUpdate);
 routes.delete("/products/:id" , ProductControllers.ProductDelete );
+
+//Rotas de Painel ADM
+routes.get("/dashboard" , (req , res) => {
+  res.send("Este é o Painel de ADM")
+})
+
+//Rotas do Carrinho
+routes.post("/cart" , CartController.addItem);
+
 
 
 
