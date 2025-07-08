@@ -137,5 +137,13 @@ npm run dev
 
 ---
 
+### 📦 Pedidos
+- `POST /orders` → Criar pedidos  
+- `GET /orders` → Listar todos  
+- `GET /orders/:id` → Buscar por ID  
+- `PUT /orders/:id/pay` → Marcar como Pago 
+- `PUT /orders/:id/deliver` → Marcar como entregue
+
+
 > 🔐 Algumas rotas exigem token JWT no header `Authorization`.  
 > Para testar facilmente, use a interface Swagger: `http://localhost:3000/api-docs`
