@@ -104,10 +104,6 @@ npm run dev
 
 ## 📚 Rotas Criadas da API
 
-### 🔐 Autenticação
-- `POST /users/login` → Autentica usuário e retorna token JWT
-
----
 
 ### 👤 Usuários
 - `POST /users` → Cadastrar novo usuário  
@@ -115,6 +111,12 @@ npm run dev
 - `GET /users/:id` → Buscar usuário por ID  
 - `PUT /users/:id` → Atualizar dados do usuário  
 - `DELETE /users/:id` → Deletar usuário por ID
+
+---
+
+### 🔐 Autenticação
+- `POST /users/login` → Autentica usuário e retorna token JWT
+- `POST /users/logout` → Faz logout do usuário
 
 ---
 

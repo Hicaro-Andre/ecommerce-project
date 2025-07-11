@@ -27,8 +27,11 @@ routes.get("/users/:id", CadUserControllers.CadUserListId);
 routes.put("/users/:id", UserData, CadUserControllers.CadUserUpdate);
 routes.delete("/users/:id", CadUserControllers.CadUserDelete);
 
-// 🔐 Rotas de Login
+// 🔐 Rotas de Login/Logout
 routes.post("/users/login", LoginUserController.login);
+routes.post("/users/logout" , AuthLoginData , (req, res)=> {
+  res.status(200).json({ message: 'Logout realizado com sucesso.' });
+})
 
 // 🛍️ Rotas de Produtos
 routes.post("/products", AuthLoginData, ProductData, ProductControllers.ProductCreate);

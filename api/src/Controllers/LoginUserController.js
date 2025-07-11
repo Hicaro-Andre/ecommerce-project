@@ -1,11 +1,11 @@
 const UserModel = require("../Models/CadUsersModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+const SECRET = "sua_chave_secreta"; // ideal colocar em variável de ambiente
 
 class LoginUserController {
-  
-  
   async login(req, res) {
-    
     const { email, password } = req.body;
 
     try {
@@ -19,12 +19,24 @@ class LoginUserController {
         return res.status(401).json({ message: "Senha incorreta." });
       }
 
-      // Remover a senha do retorno
+      // Remove a senha do objeto retornado
       const { password: _, ...userData } = user.toObject();
+
+      // Gera o token JWT
+      const token = jwt.sign(
+        {
+          id: user._id,
+          email: user.email,
+          // pode incluir outras informações como role, se desejar
+        },
+        SECRET,
+        { expiresIn: "2h" }
+      );
 
       return res.status(200).json({
         message: "Login realizado com sucesso.",
         user: userData,
+        token: token, // envia o token aqui
       });
     } catch (error) {
       console.error("Erro no login:", error);
