@@ -4,6 +4,7 @@ const routes = express.Router();
 // Controllers e Middlewares
 const CadUserControllers = require("../Controllers/CadUsersControllers");
 const UserData = require("../Middlewares/UserData.js");
+const AuthorizeRoles = require ("../Middlewares/AuthorizeRoles.js")
 
 const ProductControllers = require("../Controllers/ProductControllers");
 const ProductData = require("../Middlewares/ProductsData.js");
@@ -22,7 +23,8 @@ const WishlistController = require("../Controllers/WishlistController.js");
 
 // 📦 Rotas de Cadastro de Usuários
 routes.post("/users", UserData, CadUserControllers.CadUserCreate);
-routes.get("/users", CadUserControllers.CadUserList);
+// Rota protegida para listar todos os usuários (apenas admin)
+routes.get('/users', AuthLoginData, AuthorizeRoles('admin'), CadUserControllers.CadUserList);
 routes.get("/users/:id", CadUserControllers.CadUserListId);
 routes.put("/users/:id", UserData, CadUserControllers.CadUserUpdate);
 routes.delete("/users/:id", CadUserControllers.CadUserDelete);

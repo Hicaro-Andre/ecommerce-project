@@ -1,11 +1,19 @@
 const UserModel = require("../Models/CadUsersModel");
 
 class CadUserControllers {
-  
-  // Criar usuário
+
+  // Criar usuário (público) - role forçado para "user"
   async CadUserCreate(req, res) {
     try {
-      const createUser = await UserModel.create(req.body);
+      const { nome, email, senha } = req.body;
+
+      const createUser = await UserModel.create({
+        nome,
+        email,
+        senha,
+        role: "user" // garante que ninguém cria admin pelo body
+      });
+
       return res.status(201).json(createUser);
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
@@ -46,7 +54,10 @@ class CadUserControllers {
     try {
       const { id } = req.params;
 
-      await UserModel.findByIdAndUpdate(id, req.body);
+      // Segurança: não permitir atualização do campo "role"
+      const { nome, email, senha } = req.body;
+
+      await UserModel.findByIdAndUpdate(id, { nome, email, senha });
       return res.status(200).json({ message: "Usuário atualizado com sucesso." });
     } catch (error) {
       console.error("Erro ao atualizar usuário:", error);
