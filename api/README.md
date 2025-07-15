@@ -114,6 +114,11 @@ npm run dev
 
 ---
 
+### 👤 Admin
+- `POST /users/admin` → Cadastro de admin
+
+---
+
 ### 🔐 Autenticação
 - `POST /users/login` → Autentica usuário e retorna token JWT
 - `POST /users/logout` → Faz logout do usuário

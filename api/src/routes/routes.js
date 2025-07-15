@@ -21,6 +21,9 @@ routes.get("/users/:id", AuthLoginData, CadUserControllers.CadUserListId);
 routes.put("/users/:id", UserData, AuthLoginData, CadUserControllers.CadUserUpdate);
 routes.delete("/users/:id", AuthLoginData, AuthorizeRoles('admin'), CadUserControllers.CadUserDelete);
 
+//Cadastro de Admin
+routes.post("/users/admin", AuthLoginData, AuthorizeRoles('admin'), CadUserControllers.CadAdminCreate);
+
 //Rotas de Login/Logout
 routes.post("/users/login", LoginUserController.login);//endpoint public
 routes.post("/users/logout" , AuthLoginData, (req, res)=> {

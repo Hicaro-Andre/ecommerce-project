@@ -1,4 +1,5 @@
 const UserModel = require("../Models/CadUsersModel");
+const bcrypt = require('bcrypt');
 
 class CadUserControllers {
   // Criar usuário (público) - role forçado para "user"
@@ -42,6 +43,41 @@ class CadUserControllers {
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
       return res.status(500).json({ message: "Erro ao criar usuário" });
+    }
+  }
+
+  async CadAdminCreate(req, res) {
+    const { cpf , name, email, password } = req.body;
+
+    try {
+      // Verifica se já existe usuário com o mesmo email
+      const existingUser = await UserModel.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ message: "Email já cadastrado" });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const adminUser = new UserModel({
+        cpf,
+        name,
+        email,
+        password: hashedPassword,
+        role: "admin", // role já definido como admin
+      });
+
+      await adminUser.save();
+
+      res
+        .status(201)
+        .json({
+          message: "Admin cadastrado com sucesso",
+          user: { id: adminUser._id, email: adminUser.email },
+        });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Erro ao cadastrar admin", error: error.message });
     }
   }
 
