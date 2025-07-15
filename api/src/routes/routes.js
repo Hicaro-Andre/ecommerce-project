@@ -1,67 +1,59 @@
 const express = require("express");
 const routes = express.Router();
 
-// Controllers e Middlewares
 const CadUserControllers = require("../Controllers/CadUsersControllers");
 const UserData = require("../Middlewares/UserData.js");
 const AuthorizeRoles = require ("../Middlewares/AuthorizeRoles.js")
-
 const ProductControllers = require("../Controllers/ProductControllers");
 const ProductData = require("../Middlewares/ProductsData.js");
-
 const LoginUserController = require("../Controllers/LoginUserController.js");
 const AuthLoginData = require('../Middlewares/AuthLoginData.js');
-
 const CartController = require("../Controllers/CartController.js");
-
 const OrderController = require("../Controllers/OrderController.js");
-
-// Novos Controllers
 const ProductReviewController = require("../Controllers/ProductReviewController.js");
 const WishlistController = require("../Controllers/WishlistController.js");
 
 
-// 📦 Rotas de Cadastro de Usuários
-routes.post("/users", UserData, CadUserControllers.CadUserCreate);
-// Rota protegida para listar todos os usuários (apenas admin)
+//Cadastro de Usuários
+routes.post("/users", UserData, CadUserControllers.CadUserCreate);//endpoint public
 routes.get('/users', AuthLoginData, AuthorizeRoles('admin'), CadUserControllers.CadUserList);
-routes.get("/users/:id", CadUserControllers.CadUserListId);
-routes.put("/users/:id", UserData, CadUserControllers.CadUserUpdate);
-routes.delete("/users/:id", CadUserControllers.CadUserDelete);
+routes.get("/users/:id", AuthLoginData, CadUserControllers.CadUserListId);
+routes.put("/users/:id", UserData, AuthLoginData, CadUserControllers.CadUserUpdate);
+routes.delete("/users/:id", AuthLoginData, AuthorizeRoles('admin'), CadUserControllers.CadUserDelete);
 
-// 🔐 Rotas de Login/Logout
-routes.post("/users/login", LoginUserController.login);
-routes.post("/users/logout" , AuthLoginData , (req, res)=> {
+//Rotas de Login/Logout
+routes.post("/users/login", LoginUserController.login);//endpoint public
+routes.post("/users/logout" , AuthLoginData, (req, res)=> {
   res.status(200).json({ message: 'Logout realizado com sucesso.' });
 })
 
-// 🛍️ Rotas de Produtos
-routes.post("/products", AuthLoginData, ProductData, ProductControllers.ProductCreate);
-routes.get("/products", ProductControllers.ProductList);
-routes.get("/products/:id", ProductControllers.ProductListId);
-routes.put("/products/:id", ProductControllers.ProductUpdate);
-routes.delete("/products/:id", ProductControllers.ProductDelete);
+//Produtos
+routes.post("/products", ProductData, AuthLoginData, AuthorizeRoles('admin'), ProductControllers.ProductCreate);
+routes.get("/products", ProductControllers.ProductList);//endpoint public
+routes.get("/products/:id", ProductControllers.ProductListId);//endpoint public
+routes.put("/products/:id", AuthLoginData, AuthorizeRoles('admin'), ProductControllers.ProductUpdate);
+routes.delete("/products/:id", AuthLoginData, AuthorizeRoles('admin'), ProductControllers.ProductDelete);
 
-// 📊 Painel ADM (temporário)
-routes.get("/dashboard", (req, res) => {
+//Dashboard
+routes.get("/dashboard", AuthLoginData, AuthorizeRoles('admin'), (req, res) => {
   res.send("Este é o Painel de ADM");
 });
 
-// 🛒 Rotas do Carrinho
-routes.post("/cart", CartController.addItem);
+//Cart
+routes.post("/cart", CartController.addItem);//endpoint public
 
-// 📦 Rotas de Pedidos (Order)
-routes.post("/orders", OrderController.create);
-routes.get("/orders", OrderController.getAll);
-routes.get("/orders/:id", OrderController.getById);
-routes.put("/orders/:id/pay", OrderController.markAsPaid);
-routes.put("/orders/:id/deliver", OrderController.markAsDelivered);
+//Pedidos (Order)
+routes.post("/orders", AuthLoginData, OrderController.create);
+routes.get("/orders", AuthLoginData, OrderController.getAll);
+routes.get("/orders/:id", AuthLoginData, OrderController.getById);
+routes.put("/orders/:id/pay", AuthLoginData, OrderController.markAsPaid);
+routes.put("/orders/:id/deliver", AuthLoginData, OrderController.markAsDelivered);
 
-// ⭐ Rotas de Avaliações de Produtos
+//Avaliações de Produtos
 routes.post("/reviews", AuthLoginData, ProductReviewController.createReview);
-routes.get("/reviews/:productId", ProductReviewController.getReviewsByProduct);
+routes.get("/reviews/:productId", ProductReviewController.getReviewsByProduct);//endpoint public
 
-// 💖 Rotas de Lista de Desejos (Wishlist)
+//Lista de Desejos (Wishlist)
 routes.post("/wishlist", AuthLoginData, WishlistController.addToWishlist);
 routes.delete("/wishlist/:productId", AuthLoginData, WishlistController.removeFromWishlist);
 routes.get("/wishlist", AuthLoginData, WishlistController.getWishlist);

@@ -1,20 +1,44 @@
 const UserModel = require("../Models/CadUsersModel");
 
 class CadUserControllers {
-
   // Criar usuário (público) - role forçado para "user"
   async CadUserCreate(req, res) {
     try {
-      const { nome, email, senha } = req.body;
+      const { cpf, name, email, password } = req.body; // Use os mesmos nomes do Model
 
+      // Validação dos campos obrigatórios
+      if (!cpf || !name || !email || !password) {
+        return res.status(400).json({
+          message:
+            "Todos os campos (cpf, name, email, password) são obrigatórios",
+        });
+      }
+
+      // Verifica se CPF ou email já existem
+      const userExists = await UserModel.findOne({ $or: [{ cpf }, { email }] });
+      if (userExists) {
+        return res.status(409).json({
+          message:
+            userExists.cpf === cpf
+              ? "CPF já cadastrado"
+              : "Email já cadastrado",
+        });
+      }
+
+      // O hash da senha já é feito automaticamente pelo pre('save') no Model
       const createUser = await UserModel.create({
-        nome,
+        cpf,
+        name,
         email,
-        senha,
-        role: "user" // garante que ninguém cria admin pelo body
+        password, // Será automaticamente hasheado pelo Mongoose middleware
+        role: "user", // Garante o valor padrão
       });
 
-      return res.status(201).json(createUser);
+      // Remove a senha do objeto retornado por segurança
+      const userWithoutPassword = createUser.toObject();
+      delete userWithoutPassword.password;
+
+      return res.status(201).json(userWithoutPassword);
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
       return res.status(500).json({ message: "Erro ao criar usuário" });
@@ -58,7 +82,9 @@ class CadUserControllers {
       const { nome, email, senha } = req.body;
 
       await UserModel.findByIdAndUpdate(id, { nome, email, senha });
-      return res.status(200).json({ message: "Usuário atualizado com sucesso." });
+      return res
+        .status(200)
+        .json({ message: "Usuário atualizado com sucesso." });
     } catch (error) {
       console.error("Erro ao atualizar usuário:", error);
       return res.status(500).json({ message: "Erro ao atualizar usuário." });
