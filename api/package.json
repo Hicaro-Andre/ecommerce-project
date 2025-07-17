@@ -2,11 +2,11 @@
   "name": "cad_product",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "start": "ts-node src/index.ts",
+     "dev": "nodemon --exec ts-node src/index.ts"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +22,8 @@
   },
   "devDependencies": {
     "@types/swagger-ui-express": "^4.1.8",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }
