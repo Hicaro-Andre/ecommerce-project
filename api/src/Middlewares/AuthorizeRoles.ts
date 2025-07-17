@@ -15,9 +15,10 @@ declare module 'express-serve-static-core' {
 }
 
 const authorizeRoles = (...rolesPermitidos: string[]) => {
-  return (req: Request, res: Response, next: NextFunction): Response | void => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user || !rolesPermitidos.includes(req.user.role)) {
-      return res.status(403).json({ message: 'Acesso negado: permissão insuficiente' });
+      res.status(403).json({ message: 'Acesso negado: permissão insuficiente' });
+      return;
     }
 
     next();

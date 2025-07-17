@@ -1,131 +1,49 @@
-import mongoose, { Document, Schema, Types, Model } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
-interface IOrderItem {
-  product: Types.ObjectId;
-  name: string;
-  quantity: number;
-  price: number;
-  image: string;
-}
-
-interface IShippingAddress {
-  address: string;
-  number?: string;
-  city: string;
-  state?: string;
-  postalCode: string;
-  country: string;
-}
-
-interface IPaymentResult {
-  id?: string;
-  status?: string;
-  update_time?: string;
-  email_address?: string;
-}
-
-interface IOrder extends Document {
-  user: Types.ObjectId;
-  orderItems: IOrderItem[];
-  shippingAddress: IShippingAddress;
+export interface IOrder extends Document {
+  user: mongoose.Types.ObjectId | string;
+  orderItems: any[];
+  shippingAddress: any;
   paymentMethod: string;
-  paymentResult?: IPaymentResult;
+  paymentResult?: any;
   itemsPrice: number;
   shippingPrice: number;
   taxPrice: number;
   totalPrice: number;
-  isPaid: boolean;
+  status: "pendente" | "pago" | "processando" | "enviado" | "entregue" | "cancelado";
+  isPaid?: boolean;
   paidAt?: Date;
-  isDelivered: boolean;
+  isDelivered?: boolean;
   deliveredAt?: Date;
-  status: "pendente" | "processando" | "enviado" | "entregue" | "cancelado";
-  createdAt: Date;
-  updatedAt: Date;
+  shippedAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const OrderSchema = new Schema<IOrder>(
   {
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    orderItems: [
-      {
-        product: {
-          type: Schema.Types.ObjectId,
-          ref: "Product",
-          required: true,
-        },
-        name: { type: String, required: true },
-        quantity: { type: Number, required: true },
-        price: { type: Number, required: true },
-        image: { type: String, required: true },
-      },
-    ],
-    shippingAddress: {
-      address: { type: String, required: true },
-      number: { type: String },
-      city: { type: String, required: true },
-      state: { type: String },
-      postalCode: { type: String, required: true },
-      country: { type: String, required: true },
-    },
-    paymentMethod: {
-      type: String,
-      required: true,
-    },
-    paymentResult: {
-      id: { type: String },
-      status: { type: String },
-      update_time: { type: String },
-      email_address: { type: String },
-    },
-    itemsPrice: {
-      type: Number,
-      required: true,
-      default: 0.0,
-    },
-    shippingPrice: {
-      type: Number,
-      required: true,
-      default: 0.0,
-    },
-    taxPrice: {
-      type: Number,
-      required: true,
-      default: 0.0,
-    },
-    totalPrice: {
-      type: Number,
-      required: true,
-      default: 0.0,
-    },
-    isPaid: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    paidAt: {
-      type: Date,
-    },
-    isDelivered: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    deliveredAt: {
-      type: Date,
-    },
+    user: { type: Schema.Types.ObjectId, required: true, ref: "CadUsers" },
+    orderItems: [{ type: Object, required: true }],
+    shippingAddress: { type: Object, required: true },
+    paymentMethod: { type: String, required: true },
+    paymentResult: { type: Object, default: {} },
+    itemsPrice: { type: Number, required: true },
+    shippingPrice: { type: Number, required: true },
+    taxPrice: { type: Number, required: true },
+    totalPrice: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["pendente", "processando", "enviado", "entregue", "cancelado"],
+      enum: ["pendente", "pago", "processando", "enviado", "entregue", "cancelado"],
       default: "pendente",
     },
+    isPaid: { type: Boolean, default: false },
+    paidAt: { type: Date },
+    isDelivered: { type: Boolean, default: false },
+    deliveredAt: { type: Date },
+    shippedAt: { type: Date },
   },
   { timestamps: true }
 );
 
-const OrderModel: Model<IOrder> = mongoose.model<IOrder>("Order", OrderSchema);
-
+const OrderModel = mongoose.model<IOrder>("Order", OrderSchema);
 export default OrderModel;

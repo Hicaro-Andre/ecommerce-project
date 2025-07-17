@@ -1,70 +1,61 @@
-import { Request, Response } from 'express';
-import Cart from '../Models/CartModel';
-import Product from '../Models/ProductModel';
+import { Request, Response } from "express";
+import Cart from "../Models/CartModel";
+import Product from "../Models/ProductModel";
+import { Types } from "mongoose";
 
 const CartController = {
-  // Adicionar um item ao carrinho
-  async addItem(req: Request, res: Response): Promise<Response> {
+  async addItem(req: Request, res: Response): Promise<void> {
     try {
-      const userId: string = req.body.userId;
-      const productId: string = req.body.productId;
-      const quantity: number = parseInt(req.body.quantity);
+      const { userId, productId, quantity } = req.body;
 
-      // Validação básica
       if (!userId || !productId || !quantity || quantity <= 0) {
-        return res.status(400).json({ message: 'Dados inválidos' });
+        res.status(400).json({ message: "Dados inválidos" });
+        return;
       }
 
-      // Buscar o produto para pegar o preço atual
       const product = await Product.findById(productId);
       if (!product) {
-        return res.status(404).json({ message: 'Produto não encontrado' });
+        res.status(404).json({ message: "Produto não encontrado" });
+        return;
       }
 
-      const priceAtPurchase = product.price;
-
-      // Tenta encontrar um carrinho existente para o usuário
       let cart = await Cart.findOne({ userId });
 
       if (cart) {
-        // Verifica se o produto já está no carrinho
-        const existingItem = cart.itens.find(item => item.productID.toString() === productId);
+        const existingItem = cart.itens.find(
+          (item) => item.productID.toString() === productId
+        );
 
         if (existingItem) {
-          // Se já existe, soma a quantidade
           existingItem.quantity += quantity;
         } else {
-          // Se não existe, adiciona novo item
           cart.itens.push({
-            productID: productId,
+            productID: new Types.ObjectId(productId),
             quantity,
-            priceAtPurchase
+            priceAtPurchase: product.price,
           });
         }
 
-        cart.updateAt = new Date();
-        await cart.save(); // Salva o carrinho atualizado
+        await cart.save();
       } else {
-        // Se o usuário não tem carrinho, cria um novo
-        cart = new Cart({
+        cart = await Cart.create({
           userId,
-          itens: [{
-            productID: productId,
-            quantity,
-            priceAtPurchase
-          }]
+          itens: [
+            {
+              productID: productId,
+              quantity,
+              priceAtPurchase: product.price,
+            },
+          ],
         });
-
-        await cart.save(); // Salva novo carrinho
       }
 
-      return res.status(200).json(cart); // Retorna o carrinho atualizado/criado
-
+      res.status(200).json(cart);
     } catch (error) {
-      console.error('Erro ao adicionar item ao carrinho:', error);
-      return res.status(500).json({ message: 'Erro interno do servidor' });
+      console.error("Erro ao adicionar item:", error);
+      res.status(500).json({ message: "Erro interno" });
     }
-  }
+  },
 };
 
 export default CartController;

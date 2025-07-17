@@ -1,17 +1,9 @@
-import { Request, Response } from 'express';
-import OrderModel from '../Models/OrderModel';
-
-interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email?: string;
-    role?: string;
-  };
-}
+import { Request, Response } from "express";
+import OrderModel from "../Models/OrderModel";
 
 class OrderController {
   // Criar um novo pedido
-  async create(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  async create(req: Request, res: Response): Promise<void> {
     try {
       const {
         orderItems,
@@ -21,19 +13,22 @@ class OrderController {
         shippingPrice,
         taxPrice,
         totalPrice,
-        paymentResult, // opcional
+        paymentResult,
       } = req.body;
 
-      if (!orderItems || orderItems.length === 0) {
-        return res.status(400).json({ message: "O pedido está vazio." });
+      const userId = (req as any).user?.id;
+      if (!userId) {
+        res.status(401).json({ message: "Usuário não autenticado." });
+        return;
       }
 
-      if (!req.user?.id) {
-        return res.status(401).json({ message: "Usuário não autenticado." });
+      if (!orderItems || orderItems.length === 0) {
+        res.status(400).json({ message: "O pedido está vazio." });
+        return;
       }
 
       const newOrder = await OrderModel.create({
-        user: req.user.id,
+        user: userId,
         orderItems,
         shippingAddress,
         paymentMethod,
@@ -44,42 +39,56 @@ class OrderController {
         totalPrice,
       });
 
-      return res.status(201).json(newOrder);
+      res.status(201).json(newOrder);
     } catch (err: any) {
-      return res.status(500).json({ message: "Erro ao criar o pedido", error: err.message });
+      res
+        .status(500)
+        .json({ message: "Erro ao criar o pedido", error: err.message });
     }
   }
 
-  // Buscar todos os pedidos do usuário logado
-  async getMyOrders(req: AuthenticatedRequest, res: Response): Promise<Response> {
+  // Buscar pedidos do usuário logado
+  async getMyOrders(req: Request, res: Response): Promise<void> {
     try {
-      if (!req.user?.id) {
-        return res.status(401).json({ message: "Usuário não autenticado." });
+      const userId = (req as any).user?.id;
+      if (!userId) {
+        res.status(401).json({ message: "Usuário não autenticado." });
+        return;
       }
 
-      const orders = await OrderModel.find({ user: req.user.id });
-      return res.status(200).json(orders);
+      const orders = await OrderModel.find({ user: userId });
+      res.status(200).json(orders);
     } catch (err: any) {
-      return res.status(500).json({ message: "Erro ao buscar seus pedidos", error: err.message });
+      res
+        .status(500)
+        .json({ message: "Erro ao buscar pedidos", error: err.message });
     }
   }
 
   // Buscar todos os pedidos (admin)
-  async getAll(req: Request, res: Response): Promise<Response> {
+  async getAll(req: Request, res: Response): Promise<void> {
     try {
       const orders = await OrderModel.find().populate("user", "name email");
-      return res.status(200).json(orders);
+      res.status(200).json(orders);
     } catch (err: any) {
-      return res.status(500).json({ message: "Erro ao buscar todos os pedidos", error: err.message });
+      res
+        .status(500)
+        .json({
+          message: "Erro ao buscar todos os pedidos",
+          error: err.message,
+        });
     }
   }
 
-  // Atualizar status de pagamento manualmente
-  async markAsPaid(req: Request, res: Response): Promise<Response> {
+  // Marcar pedido como pago
+  async markAsPaid(req: Request, res: Response): Promise<void> {
     try {
       const order = await OrderModel.findById(req.params.id);
 
-      if (!order) return res.status(404).json({ message: "Pedido não encontrado" });
+      if (!order) {
+        res.status(404).json({ message: "Pedido não encontrado" });
+        return;
+      }
 
       order.isPaid = true;
       order.paidAt = new Date();
@@ -87,10 +96,59 @@ class OrderController {
       order.paymentResult = req.body.paymentResult || {};
 
       const updatedOrder = await order.save();
-      return res.status(200).json(updatedOrder);
+      res.status(200).json(updatedOrder);
     } catch (err: any) {
-      return res.status(500).json({ message: "Erro ao marcar como pago", error: err.message });
+      res
+        .status(500)
+        .json({ message: "Erro ao marcar como pago", error: err.message });
     }
   }
 
-// Atualizar
+  // Marcar pedido como entregue
+  async markAsDelivered(req: Request, res: Response): Promise<void> {
+    try {
+      const order = await OrderModel.findById(req.params.id);
+
+      if (!order) {
+        res.status(404).json({ message: "Pedido não encontrado" });
+        return;
+      }
+
+      order.isDelivered = true;
+      order.deliveredAt = new Date();
+      order.status = "entregue";
+
+      const updatedOrder = await order.save();
+      res.status(200).json(updatedOrder);
+    } catch (err: any) {
+      res
+        .status(500)
+        .json({ message: "Erro ao marcar como entregue", error: err.message });
+    }
+  }
+  // Buscar pedido por ID (com detalhes)
+  async getById(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+
+      const order = await OrderModel.findById(id).populate(
+        "user",
+        "name email"
+      );
+
+      if (!order) {
+        res.status(404).json({ message: "Pedido não encontrado" });
+        return;
+      }
+
+      res.status(200).json(order);
+    } catch (err: any) {
+      res.status(500).json({
+        message: "Erro ao buscar pedido",
+        error: err.message,
+      });
+    }
+  }
+}
+
+export default new OrderController();

@@ -6,25 +6,24 @@ import jwt from 'jsonwebtoken';
 const SECRET = process.env.JWT_SECRET || "sua_chave_secreta";
 
 class LoginUserController {
-  async login(req: Request, res: Response): Promise<Response> {
+  async login(req: Request, res: Response): Promise<void> {
     const { email, password } = req.body;
 
     try {
       const user = await UserModel.findOne({ email });
       if (!user) {
-        return res.status(404).json({ message: "Usuário não encontrado." });
+        res.status(404).json({ message: "Usuário não encontrado." });
+        return;
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(401).json({ message: "Senha incorreta." });
+        res.status(401).json({ message: "Senha incorreta." });
+        return;
       }
 
-      // Remove a senha do objeto retornado
-      const userData = user.toObject();
-      delete userData.password;
+      const { password: _, ...userData } = user.toObject();
 
-      // Gera o token JWT
       const token = jwt.sign(
         {
           id: user._id,
@@ -35,16 +34,17 @@ class LoginUserController {
         { expiresIn: "2h" }
       );
 
-      return res.status(200).json({
+      res.status(200).json({
         message: "Login realizado com sucesso.",
         user: userData,
         token,
       });
     } catch (error) {
       console.error("Erro no login:", error);
-      return res.status(500).json({ message: "Erro ao fazer login." });
+      res.status(500).json({ message: "Erro ao fazer login." });
     }
   }
+
 }
 
 export default new LoginUserController();

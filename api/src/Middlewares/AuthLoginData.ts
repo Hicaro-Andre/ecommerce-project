@@ -1,6 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
+// Declare global para adicionar user no Request
+declare global {
+  namespace Express {
+    interface Request {
+      user?: JwtPayload;
+    }
+  }
+}
+
 interface JwtPayload {
   id: string;
   email: string;
@@ -9,18 +18,12 @@ interface JwtPayload {
   exp?: number;
 }
 
-// Extendendo o Request para incluir o user
-declare module 'express-serve-static-core' {
-  interface Request {
-    user?: JwtPayload;
-  }
-}
-
-const AuthLoginData = (req: Request, res: Response, next: NextFunction): Response | void => {
+const AuthLoginData = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: 'Token não fornecido ou mal formatado (use Bearer)' });
+    res.status(401).json({ message: 'Token não fornecido ou mal formatado (use Bearer)' });
+    return;
   }
 
   const token = authHeader.split(' ')[1];
@@ -30,7 +33,8 @@ const AuthLoginData = (req: Request, res: Response, next: NextFunction): Respons
     req.user = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ message: 'Token inválido ou expirado' });
+    res.status(401).json({ message: 'Token inválido ou expirado' });
+    return;
   }
 };
 

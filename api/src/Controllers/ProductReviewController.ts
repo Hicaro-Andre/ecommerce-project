@@ -1,27 +1,32 @@
 import { Request, Response } from 'express';
 import ProductReview from '../Models/ProductReviewModel';
 
-interface AuthenticatedRequest extends Request {
-  user?: {
-    _id: string;
-    [key: string]: any;
-  };
+interface JwtPayload {
+  id: string;
+  email: string;
+  role: string;
 }
 
-// Cria uma nova avaliação para um produto
-export const createReview = async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+// Extendendo a interface Request para incluir o usuário autenticado
+interface AuthenticatedRequest extends Request {
+  user?: JwtPayload;
+}
+
+export const createReview = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { productId, rating, comment } = req.body;
 
-    const userId = req.user?._id;
+    const userId = req.user?.id;
     if (!userId) {
-      return res.status(401).json({ message: 'Usuário não autenticado.' });
+      res.status(401).json({ message: 'Usuário não autenticado.' });
+      return;
     }
 
-    // Evita avaliações duplicadas para o mesmo produto pelo mesmo usuário
+    // Evita avaliações duplicadas
     const existingReview = await ProductReview.findOne({ userId, productId });
     if (existingReview) {
-      return res.status(400).json({ message: 'Você já avaliou este produto.' });
+      res.status(400).json({ message: 'Você já avaliou este produto.' });
+      return;
     }
 
     const review = await ProductReview.create({
@@ -29,25 +34,31 @@ export const createReview = async (req: AuthenticatedRequest, res: Response): Pr
       productId,
       rating,
       comment,
-      verifiedPurchase: true, // aqui você pode implementar lógica real para validar compra
+      verifiedPurchase: true,
     });
 
-    return res.status(201).json(review);
+    res.status(201).json(review);
   } catch (error: any) {
-    return res.status(500).json({ message: 'Erro ao criar avaliação.', error: error.message });
+    res.status(500).json({
+      message: 'Erro ao criar avaliação.',
+      error: error.message,
+    });
   }
 };
 
 // Lista todas as avaliações de um produto
-export const getReviewsByProduct = async (req: Request, res: Response): Promise<Response> => {
+export const getReviewsByProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const { productId } = req.params;
 
-    const reviews = await ProductReview.find({ productId })
-      .populate('userId', 'name'); // traz o nome do usuário
+    const reviews = await ProductReview.find({ productId }).populate('userId', 'name');
 
-    return res.json(reviews);
+    res.json(reviews);
   } catch (error: any) {
-    return res.status(500).json({ message: 'Erro ao buscar avaliações.', error: error.message });
+    res.status(500).json({
+      message: 'Erro ao buscar avaliações.',
+      error: error.message,
+    });
   }
 };
+
