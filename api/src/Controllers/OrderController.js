@@ -1,6 +1,7 @@
 const OrderModel = require("../Models/OrderModel");
 
 class OrderController {
+  
   // Criar um novo pedido
   async create(req, res) {
     try {

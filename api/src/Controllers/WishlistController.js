@@ -1,6 +1,6 @@
 const Wishlist = require('../Models/WishlistModel');
 
-// 📌 Adiciona um produto à wishlist do usuário
+//Adiciona um produto à wishlist do usuário
 exports.addToWishlist = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -27,7 +27,7 @@ exports.addToWishlist = async (req, res) => {
   }
 };
 
-// 📌 Remove um produto da wishlist
+//Remove um produto da wishlist
 exports.removeFromWishlist = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -45,7 +45,7 @@ exports.removeFromWishlist = async (req, res) => {
   }
 };
 
-// 📌 Retorna a lista de desejos do usuário
+//Retorna a lista de desejos do usuário
 exports.getWishlist = async (req, res) => {
   try {
     const userId = req.user._id;

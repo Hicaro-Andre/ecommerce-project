@@ -1,90 +1,84 @@
 const UserModel = require("../Models/CadUsersModel");
-const bcrypt = require('bcrypt');
 
 class CadUserControllers {
-  // Criar usuário (público) - role forçado para "user"
+
+  //Criar usuário (user)
   async CadUserCreate(req, res) {
     try {
-      const { cpf, name, email, password } = req.body; // Use os mesmos nomes do Model
+      const { cpf, name, email, password } = req.body;
 
-      // Validação dos campos obrigatórios
       if (!cpf || !name || !email || !password) {
         return res.status(400).json({
-          message:
-            "Todos os campos (cpf, name, email, password) são obrigatórios",
+          message: "Todos os campos (cpf, name, email, password) são obrigatórios",
         });
       }
 
-      // Verifica se CPF ou email já existem
       const userExists = await UserModel.findOne({ $or: [{ cpf }, { email }] });
       if (userExists) {
         return res.status(409).json({
-          message:
-            userExists.cpf === cpf
-              ? "CPF já cadastrado"
-              : "Email já cadastrado",
+          message: userExists.cpf === cpf ? "CPF já cadastrado" : "Email já cadastrado",
         });
       }
 
-      // O hash da senha já é feito automaticamente pelo pre('save') no Model
       const createUser = await UserModel.create({
         cpf,
         name,
         email,
-        password, // Será automaticamente hasheado pelo Mongoose middleware
-        role: "user", // Garante o valor padrão
+        password, // 🔒 Hash feito pelo Model
+        role: "user"
       });
 
-      // Remove a senha do objeto retornado por segurança
       const userWithoutPassword = createUser.toObject();
       delete userWithoutPassword.password;
 
       return res.status(201).json(userWithoutPassword);
+
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
       return res.status(500).json({ message: "Erro ao criar usuário" });
     }
   }
 
+  //Criar admin (admin)
   async CadAdminCreate(req, res) {
-    const { cpf , name, email, password } = req.body;
-
     try {
-      // Verifica se já existe usuário com o mesmo email
+      const { cpf, name, email, password } = req.body;
+
+      if (!cpf || !name || !email || !password) {
+        return res.status(400).json({ message: "Campos obrigatórios faltando" });
+      }
+
       const existingUser = await UserModel.findOne({ email });
       if (existingUser) {
         return res.status(400).json({ message: "Email já cadastrado" });
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      const adminUser = new UserModel({
+      const adminUser = await UserModel.create({
         cpf,
         name,
         email,
-        password: hashedPassword,
-        role: "admin", // role já definido como admin
+        password,
+        role: "admin"
       });
 
-      await adminUser.save();
+      const userWithoutPassword = adminUser.toObject();
+      delete userWithoutPassword.password;
 
-      res
-        .status(201)
-        .json({
-          message: "Admin cadastrado com sucesso",
-          user: { id: adminUser._id, email: adminUser.email },
-        });
+      res.status(201).json({
+        message: "Admin cadastrado com sucesso",
+        user: userWithoutPassword
+      });
+
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Erro ao cadastrar admin", error: error.message });
+      console.error("Erro ao cadastrar admin:", error);
+      res.status(500).json({ message: "Erro ao cadastrar admin" });
     }
   }
 
-  // Listar todos os usuários
+  //Listar todos usuários
   async CadUserList(req, res) {
     try {
-      const listuser = await UserModel.find();
+      const listuser = await UserModel.find().select('-password');
       return res.status(200).json(listuser);
     } catch (error) {
       console.error("Erro ao listar usuários:", error);
@@ -92,42 +86,49 @@ class CadUserControllers {
     }
   }
 
-  // Listar usuário por ID
+  //Listar usuário por ID
   async CadUserListId(req, res) {
     try {
       const { id } = req.params;
-      const usersId = await UserModel.findById(id);
+      const usersId = await UserModel.findById(id).select('-password');
 
-      if (!usersId) {
-        return res.status(404).json({ message: "Usuário não encontrado." });
-      }
+      if (!usersId) return res.status(404).json({ message: "Usuário não encontrado." });
 
       return res.status(200).json(usersId);
     } catch (error) {
-      console.error("Erro ao buscar usuário por ID:", error);
+      console.error("Erro ao buscar usuário:", error);
       return res.status(500).json({ message: "Erro ao buscar usuário." });
     }
   }
 
-  // Atualizar usuário por ID
+  //Atualizar usuário
   async CadUserUpdate(req, res) {
     try {
       const { id } = req.params;
+      const { name, email, password } = req.body;
 
-      // Segurança: não permitir atualização do campo "role"
-      const { nome, email, senha } = req.body;
+      const user = await UserModel.findById(id);
+      if (!user) return res.status(404).json({ message: "Usuário não encontrado." });
 
-      await UserModel.findByIdAndUpdate(id, { nome, email, senha });
-      return res
-        .status(200)
-        .json({ message: "Usuário atualizado com sucesso." });
+      if (name) user.name = name;
+      if (email) user.email = email;
+      if (password) user.password = password;
+      await user.save();
+
+      const userWithoutPassword = user.toObject();
+      delete userWithoutPassword.password;
+
+      return res.status(200).json({
+        message: "Usuário atualizado com sucesso.",
+        user: userWithoutPassword
+      });
     } catch (error) {
       console.error("Erro ao atualizar usuário:", error);
       return res.status(500).json({ message: "Erro ao atualizar usuário." });
     }
   }
 
-  // Deletar usuário por ID
+  //Deletar usuário
   async CadUserDelete(req, res) {
     try {
       const { id } = req.params;

@@ -14,6 +14,7 @@ const ProductReviewController = require("../Controllers/ProductReviewController.
 const WishlistController = require("../Controllers/WishlistController.js");
 
 
+
 //Cadastro de Usuários
 routes.post("/users", UserData, CadUserControllers.CadUserCreate);//endpoint public
 routes.get('/users', AuthLoginData, AuthorizeRoles('admin'), CadUserControllers.CadUserList);

@@ -1,6 +1,6 @@
 const ProductReview = require('../Models/ProductReviewModel');
 
-// 📌 Cria uma nova avaliação para um produto
+//Cria uma nova avaliação para um produto
 exports.createReview = async (req, res) => {
   try {
     const { productId, rating, comment } = req.body;
@@ -28,7 +28,7 @@ exports.createReview = async (req, res) => {
   }
 };
 
-// 📌 Lista todas as avaliações de um produto
+//Lista todas as avaliações de um produto
 exports.getReviewsByProduct = async (req, res) => {
   try {
     const { productId } = req.params;

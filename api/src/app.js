@@ -18,10 +18,6 @@ app.use(express.json());
 // Rota para documentação Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
-// Rota base para teste com o front-end
-app.get('/', (req, res) => {
-  res.json({ message: 'API conectada com sucesso ao front-end!' });
-});
 
 // Demais rotas da aplicação
 app.use(routes);

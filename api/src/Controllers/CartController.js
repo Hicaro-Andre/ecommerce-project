@@ -1,10 +1,10 @@
-const Cart = require('../Models/CartModel'); // Importa o model do carrinho
-const Product = require('../Models/ProductModel'); // Para pegar info do produto (ex: preço)
+const Cart = require('../Models/CartModel'); 
+const Product = require('../Models/ProductModel'); 
 
-// Controlador do carrinho
+
 const CartController = {
 
-  // Adicionar um item ao carrinho
+  //Adicionar um item ao carrinho
   async addItem(req, res) {
     try {
       const userId = req.body.userId;

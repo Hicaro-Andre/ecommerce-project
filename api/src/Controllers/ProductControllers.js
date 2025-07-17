@@ -1,7 +1,8 @@
 const ProductModel = require("../Models/ProductModel");
 
 class ProductControllers {
-  // Criar Product
+  
+  //Criar Product
   async ProductCreate(req, res) {
     try {
       const createProduct = await ProductModel.create(req.body);

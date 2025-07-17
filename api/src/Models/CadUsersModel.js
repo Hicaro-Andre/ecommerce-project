@@ -30,7 +30,8 @@ const UserSchema = new Schema({
 }, { timestamps: true });
 
 
-// Criptografa a senha antes de salvar
+//TODO => Middleware no model (pre save)
+//É executado antes do documento ser salvo no banco de dados 
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next(); 
   try {

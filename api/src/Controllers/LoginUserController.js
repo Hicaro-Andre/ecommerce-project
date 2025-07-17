@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const SECRET = "sua_chave_secreta"; // ideal colocar em variável de ambiente
 
 class LoginUserController {
+  
   async login(req, res) {
     const { email, password } = req.body;
 
