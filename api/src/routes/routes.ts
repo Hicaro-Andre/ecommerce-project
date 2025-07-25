@@ -43,6 +43,7 @@ routes.post("/users/logout", AuthLoginData, (req, res) => {
 });
 // routes.post("/forgot-password", AuthController.forgotPassword);
 // routes.post("/reset-password", CheckResetToken , AuthController.resetPassword);
+//teste
 
 // Produtos
 routes.post("/products", ProductData, AuthLoginData, AuthorizeRoles('admin'), ProductControllers.ProductCreate);
