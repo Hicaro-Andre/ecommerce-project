@@ -9,13 +9,10 @@ import LoginUserController from "../Controllers/LoginUserController";
 import AuthLoginData from "../Middlewares/AuthLoginData";
 import CartController from "../Controllers/CartController";
 import OrderController from "../Controllers/OrderController";
-import AuthController from "../Controllers/AuthController";
-import CheckResetToken from "../Middlewares/CheckResetToken";
+// import AuthController from "../Controllers/AuthController";
+// import CheckResetToken from "../Middlewares/CheckResetToken";
 import * as ProductReviewController from "../Controllers/ProductReviewController";
 import * as WishlistController from "../Controllers/WishlistController";
-
-
-
 
 
 const routes = Router();
