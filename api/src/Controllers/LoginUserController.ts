@@ -3,7 +3,7 @@ import UserModel from '../Models/CadUsersModel';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-const SECRET = process.env.JWT_SECRET || "sua_chave_secreta";
+const SECRET = process.env.JWT_SECRET || "chave-secreta";
 
 class LoginUserController {
   async login(req: Request, res: Response): Promise<void> {

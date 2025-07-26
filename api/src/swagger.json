@@ -271,6 +271,11 @@
       "post": {
         "summary": "Cria um novo produto [admin]",
         "tags": ["Produtos"],
+         "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -320,7 +325,7 @@
     },
     "/products/{id}": {
       "get": {
-        "summary": "Busca um produto por ID [admin]",
+        "summary": "Busca um produto por ID",
         "tags": ["Produtos"],
         "parameters": [
           {
@@ -353,6 +358,11 @@
       "put": {
         "summary": "Atualiza um produto por ID [admin]",
         "tags": ["Produtos"],
+         "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -384,6 +394,11 @@
       "delete": {
         "summary": "Remove um produto por ID [admin]",
         "tags": ["Produtos"],
+         "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -400,7 +415,7 @@
     },
     "/cart": {
       "post": {
-        "summary": "Adiciona um item ao carrinho do usuário",
+        "summary": "Adiciona um item ao carrinho do usuário [user]",
         "tags": ["Carrinho"],
         "requestBody": {
           "required": true,
@@ -451,8 +466,13 @@
     },
     "/orders": {
       "post": {
-        "summary": "Cria um novo pedido",
+        "summary": "Cria um novo pedido [user]",
         "tags": ["Pedidos"],
+         "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -547,7 +567,7 @@
     },
     "/orders/{id}": {
       "get": {
-        "summary": "Busca um pedido por ID",
+        "summary": "Busca um pedido por ID [user]",
         "tags": ["Pedidos"],
         "parameters": [
           {
@@ -621,7 +641,7 @@
     },
     "/reviews": {
       "post": {
-        "summary": "Cria uma avaliação de produto",
+        "summary": "Cria uma avaliação de produto [user]",
         "tags": ["Avaliações"],
         "requestBody": {
           "required": true,
@@ -691,7 +711,7 @@
     },
     "/wishlist": {
       "post": {
-        "summary": "Adiciona um produto à lista de desejos do usuário",
+        "summary": "Adiciona um produto à lista de desejos do usuário [user]",
         "tags": ["Wishlist"],
         "requestBody": {
           "required": true,
@@ -719,7 +739,7 @@
         ]
       },
       "get": {
-        "summary": "Retorna a lista de desejos do usuário",
+        "summary": "Retorna a lista de desejos do usuário [user]",
         "tags": ["Wishlist"],
         "responses": {
           "200": {
@@ -752,7 +772,7 @@
     },
     "/wishlist/{productId}": {
       "delete": {
-        "summary": "Remove um produto da wishlist do usuário",
+        "summary": "Remove um produto da wishlist do usuário [user]",
         "tags": ["Wishlist"],
         "parameters": [
           {
