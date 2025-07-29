@@ -8,11 +8,12 @@
     },
     "version": "1.0.0"
   },
+  
   "paths": {
     "/users": {
       "post": {
         "summary": "Cria um novo usuário",
-        "tags": ["Usuários"],
+        "tags": ["User"],
         "requestBody": {
           "required": true,
           "content": {
@@ -37,7 +38,7 @@
       },
       "get": {
         "summary": "Lista todos os usuários [admin]",
-        "tags": ["Usuários"],
+        "tags": ["User"],
         "security": [
           {
             "bearerAuth": []
@@ -69,7 +70,7 @@
     "/users/{id}": {
       "get": {
         "summary": "Busca um usuário por ID [user]",
-        "tags": ["Usuários"],
+        "tags": ["User"],
         "security": [
           {
             "bearerAuth": []
@@ -105,7 +106,7 @@
       },
       "put": {
         "summary": "Atualiza um usuário por ID [user]",
-        "tags": ["Usuários"],
+        "tags": ["User"],
          "security": [
           {
             "bearerAuth": []
@@ -142,7 +143,7 @@
       },
       "delete": {
         "summary": "Remove um usuário por ID [user]",
-        "tags": ["Usuários"],
+        "tags": ["User"],
          "security": [
           {
             "bearerAuth": []
@@ -162,10 +163,12 @@
         }
       }
     },
+
+
     "/users/login": {
       "post": {
         "summary": "Autentica um usuário",
-        "tags": ["Auth"],
+        "tags": ["Authentication User"],
          "security": [
           {
             "bearerAuth": []
@@ -216,7 +219,7 @@
     "/users/logout": {
       "post": {
         "summary": "Faz logout do usuário (rota protegida)",
-        "tags": ["Auth"],
+        "tags": ["Authentication User"],
         "security": [
           {
             "bearerAuth": []
@@ -240,7 +243,9 @@
         }
       }
     },
-    "/users/admin": {
+
+
+    "/admin": {
       "post": {
         "summary": "Cadastro de Admin [admin]",
         "tags": ["Admin"],
@@ -267,10 +272,92 @@
         }
       }
     },
+
+
+    "/admin/login": {
+      "post": {
+        "summary": "Autentica um admin",
+        "tags": ["Authentication Admin"],
+         "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": { "type": "string" },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "_id": { "type": "string" },
+                        "name": { "type": "string" },
+                        "email": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Credenciais inválidas" },
+          "400": { "description": "Erro de validação" }
+        }
+      }
+    },
+    "/admin/logout": {
+      "post": {
+        "summary": "Faz logout do admin (rota protegida)",
+        "tags": ["Authentication Admin"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logout realizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Token não fornecido ou inválido" }
+        }
+      }
+    },
+
+
     "/products": {
       "post": {
         "summary": "Cria um novo produto [admin]",
-        "tags": ["Produtos"],
+        "tags": ["Products"],
          "security": [
           {
             "bearerAuth": []
@@ -299,7 +386,7 @@
       },
       "get": {
         "summary": "Lista todos os produtos",
-        "tags": ["Produtos"],
+        "tags": ["Products"],
         "responses": {
           "200": {
             "description": "Lista de produtos",
@@ -326,7 +413,7 @@
     "/products/{id}": {
       "get": {
         "summary": "Busca um produto por ID",
-        "tags": ["Produtos"],
+        "tags": ["Products"],
         "parameters": [
           {
             "name": "id",
@@ -357,7 +444,7 @@
       },
       "put": {
         "summary": "Atualiza um produto por ID [admin]",
-        "tags": ["Produtos"],
+        "tags": ["Products"],
          "security": [
           {
             "bearerAuth": []
@@ -393,7 +480,7 @@
       },
       "delete": {
         "summary": "Remove um produto por ID [admin]",
-        "tags": ["Produtos"],
+        "tags": ["Products"],
          "security": [
           {
             "bearerAuth": []
@@ -413,10 +500,12 @@
         }
       }
     },
+
+
     "/cart": {
       "post": {
         "summary": "Adiciona um item ao carrinho do usuário [user]",
-        "tags": ["Carrinho"],
+        "tags": ["Cart"],
         "requestBody": {
           "required": true,
           "content": {
@@ -464,11 +553,13 @@
         ]
       }
     },
+
+
     "/orders": {
       "post": {
         "summary": "Cria um novo pedido [user]",
-        "tags": ["Pedidos"],
-         "security": [
+        "tags": ["Orders (pedidos)"],
+        "security": [
           {
             "bearerAuth": []
           }
@@ -563,12 +654,76 @@
             }
           ]
         }
+      },
+      "get": {
+        "summary": "Lista todos os pedidos [user]",
+        "tags": ["Orders (pedidos)"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista dos pedidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "orderItems": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "product": { "type": "string" },
+                            "name": { "type": "string" },
+                            "quantity": { "type": "integer" },
+                            "price": { "type": "number" },
+                            "image": { "type": "string" }
+                          }
+                        }
+                      },
+                      "shippingAddress": {
+                        "type": "object",
+                        "properties": {
+                          "address": { "type": "string" },
+                          "number": { "type": "string" },
+                          "city": { "type": "string" },
+                          "state": { "type": "string" },
+                          "postalCode": { "type": "string" },
+                          "country": { "type": "string" }
+                        }
+                      },
+                      "paymentMethod": { "type": "string" },
+                      "itemsPrice": { "type": "number" },
+                      "shippingPrice": { "type": "number" },
+                      "taxPrice": { "type": "number" },
+                      "totalPrice": { "type": "number" },
+                      "paymentResult": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string" },
+                          "status": { "type": "string" },
+                          "update_time": { "type": "string" },
+                          "email_address": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/orders/{id}": {
       "get": {
         "summary": "Busca um pedido por ID [user]",
-        "tags": ["Pedidos"],
+        "tags": ["Orders (pedidos)"],
         "parameters": [
           {
             "name": "id",
@@ -596,7 +751,7 @@
       },
       "put": {
         "summary": "Atualiza status de pagamento de um pedido [admin]",
-        "tags": ["Pedidos"],
+        "tags": ["Orders (pedidos)"],
         "parameters": [
           {
             "name": "id",
@@ -619,7 +774,7 @@
     "/orders/{id}/entregar": {
       "put": {
         "summary": "Atualiza status de entrega de um pedido [admin]",
-        "tags": ["Pedidos"],
+        "tags": ["Orders (pedidos)"],
         "parameters": [
           {
             "name": "id",
@@ -639,10 +794,12 @@
         ]
       }
     },
+
+
     "/reviews": {
       "post": {
         "summary": "Cria uma avaliação de produto [user]",
-        "tags": ["Avaliações"],
+        "tags": ["Reviews (avaliações)"],
         "requestBody": {
           "required": true,
           "content": {
@@ -674,7 +831,7 @@
     "/reviews/{productId}": {
       "get": {
         "summary": "Lista todas as avaliações de um produto",
-        "tags": ["Avaliações"],
+        "tags": ["Reviews (avaliações)"],
         "parameters": [
           {
             "name": "productId",
@@ -709,10 +866,12 @@
         }
       }
     },
+
+
     "/wishlist": {
       "post": {
         "summary": "Adiciona um produto à lista de desejos do usuário [user]",
-        "tags": ["Wishlist"],
+        "tags": ["Wishlist (lista de desejos)"],
         "requestBody": {
           "required": true,
           "content": {
@@ -740,7 +899,7 @@
       },
       "get": {
         "summary": "Retorna a lista de desejos do usuário [user]",
-        "tags": ["Wishlist"],
+        "tags": ["Wishlist (lista de desejos)"],
         "responses": {
           "200": {
             "description": "Lista de produtos da wishlist",
@@ -773,7 +932,7 @@
     "/wishlist/{productId}": {
       "delete": {
         "summary": "Remove um produto da wishlist do usuário [user]",
-        "tags": ["Wishlist"],
+        "tags": ["Wishlist (lista de desejos)"],
         "parameters": [
           {
             "name": "productId",
